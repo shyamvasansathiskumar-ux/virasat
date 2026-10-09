@@ -14,9 +14,12 @@ export function useAuth(options?: UseAuthOptions) {
   const { redirectOnUnauthenticated = false, redirectPath } = options ?? {};
   const utils = trpc.useUtils();
 
+  // In the static demo (VITE_USE_BACKEND unset) there is no API to ask.
+  const backendEnabled = import.meta.env.VITE_USE_BACKEND === "true";
   const meQuery = trpc.auth.me.useQuery(undefined, {
     retry: false,
     refetchOnWindowFocus: false,
+    enabled: backendEnabled,
   });
 
   const logoutMutation = trpc.auth.logout.useMutation({
@@ -26,6 +29,11 @@ export function useAuth(options?: UseAuthOptions) {
   });
 
   const logout = useCallback(async () => {
+    if (!backendEnabled) {
+      // Static demo: nothing to sign out of on a server.
+      utils.auth.me.setData(undefined, null);
+      return;
+    }
     try {
       await logoutMutation.mutateAsync();
     } catch (error: unknown) {
@@ -46,7 +54,7 @@ export function useAuth(options?: UseAuthOptions) {
       utils.auth.me.setData(undefined, null);
       await utils.auth.me.invalidate();
     }
-  }, [logoutMutation, utils]);
+  }, [backendEnabled, logoutMutation, utils]);
 
   const state = useMemo(() => {
     localStorage.setItem(
