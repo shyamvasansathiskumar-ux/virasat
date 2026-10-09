@@ -54,7 +54,7 @@ describe("auth.logout", () => {
     expect(clearedCookies[0]?.options).toMatchObject({
       maxAge: -1,
       secure: true,
-      sameSite: "none",
+      sameSite: "lax", // self-hosted auth is no longer embedded in an iframe (see cookies.ts)
       httpOnly: true,
       path: "/",
     });
