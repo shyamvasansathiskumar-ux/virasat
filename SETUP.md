@@ -29,7 +29,7 @@ all runs on your laptop.
 # 1. Create the database and a user for the app (run once)
 mysql -u root <<'EOF'
 CREATE DATABASE virasat CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER 'virasat'@'localhost' IDENTIFIED BY 'pick-a-real-password-here';
+CREATE USER 'virasat'@'localhost' IDENTIFIED BY 'CHANGE_ME_LOCAL_PASSWORD';
 GRANT ALL PRIVILEGES ON virasat.* TO 'virasat'@'localhost';
 FLUSH PRIVILEGES;
 EOF
@@ -39,12 +39,12 @@ pnpm install
 
 # 3. Copy the env template and fill in DATABASE_URL with the password you just picked
 cp .env.example .env
-# edit .env: set DATABASE_URL=mysql://virasat:pick-a-real-password-here@127.0.0.1:3306/virasat
+# edit .env: set DATABASE_URL=mysql://virasat:CHANGE_ME_LOCAL_PASSWORD@127.0.0.1:3306/virasat
 # also set VITE_USE_BACKEND=true, and a JWT_SECRET (any long random string)
 
 # 4. Apply the database schema (creates all tables, including the new
 #    passwordHash/phone/maskedPan/state columns on users)
-DATABASE_URL="mysql://virasat:pick-a-real-password-here@127.0.0.1:3306/virasat" pnpm exec drizzle-kit migrate
+DATABASE_URL="mysql://virasat:CHANGE_ME_LOCAL_PASSWORD@127.0.0.1:3306/virasat" pnpm exec drizzle-kit migrate
 
 # 5. Run it
 pnpm dev
@@ -61,7 +61,7 @@ a real account, not the mock demo). For a jury demo where you want the
 dashboard to show real numbers, seed one account after it signs up:
 
 ```bash
-DATABASE_URL="mysql://virasat:pick-a-real-password-here@127.0.0.1:3306/virasat" \
+DATABASE_URL="mysql://virasat:CHANGE_ME_LOCAL_PASSWORD@127.0.0.1:3306/virasat" \
   pnpm exec tsx scripts/seed-demo-data.ts your-demo-account@example.com
 ```
 

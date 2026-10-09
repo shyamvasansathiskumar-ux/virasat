@@ -7,9 +7,11 @@ echo "==> Creating the database (safe to re-run)"
 # OS user who installed it (via unix_socket auth) — not to a literal 'root'
 # login. Connecting as your own macOS username is the standard fix.
 DB_ADMIN_USER="$(whoami)"
-mysql -u "$DB_ADMIN_USER" <<'SQL'
+# Pick your own local password: export VIRASAT_DB_PASSWORD=... before running.
+: "${VIRASAT_DB_PASSWORD:?Set VIRASAT_DB_PASSWORD first (any strong local password)}"
+mysql -u "$DB_ADMIN_USER" <<SQL
 CREATE DATABASE IF NOT EXISTS virasat CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-CREATE USER IF NOT EXISTS 'virasat'@'localhost' IDENTIFIED BY '53cFzMVZOAiF4Antnqd4';
+CREATE USER IF NOT EXISTS 'virasat'@'localhost' IDENTIFIED BY '${VIRASAT_DB_PASSWORD}';
 GRANT ALL PRIVILEGES ON virasat.* TO 'virasat'@'localhost';
 FLUSH PRIVILEGES;
 SQL
